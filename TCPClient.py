@@ -38,28 +38,22 @@ class TCPClient:
 		self.working_state = idle_state
 		self.str_list = []
 
-	def getsockstate(self):
-		return self.sock
-
 	def open(self):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.sock.setblocking(0)
 		# sys.stdout.write('socket.socket() called\r\n')
 #		self.src_port = src_port
 #		self.sock.bind(('', self.src_port))
-		self.state = OPEN_STATE
 		return OPEN_STATE
 			
 	def connect(self):
 		self.sock.settimeout(10)
 		try:
 			self.sock.connect((self.dst_ip, self.dst_port))
-			self.state = CONNECT_STATE
 			return CONNECT_STATE
 		except socket.error as msg:
 			self.sock.close()
 			self.sock = 0
-			self.state = CLOSE_STATE
 			return CLOSE_STATE
 
 	def readline(self):
@@ -186,42 +180,40 @@ class TCPClient:
 
 		
 	def close(self):
-		if self.sock is not 0:
-		    self.sock.close()
-		self.state = CLOSE_STATE
+		self.sock.close()
 		
-# if __name__ == '__main__':
-# 	client = TCPClient()
-#
-# 	print(client.state)
-#
-# 	while True:
-#
-#
-# 		if client.state is CLOSE_STATE:
-# 			cur_state = client.state
-# 			client.state = client.open(5001)
-# 			if client.state != cur_state:
-# 				sys.stdout.write('%r\r\n' % client.state)
-# #			client.state = OPENTRY_STATE
-#
-# 		elif client.state is OPEN_STATE:
-# 			cur_state = client.state
-# 			client.state = client.connect("192.168.11.235", 9000)
-# 			if client.state != cur_state:
-# 				sys.stdout.write('%r\r\n' % client.state)
-#
-# 		elif client.state is CONNECT_STATE:
-# #			sys.stdout.write("check readline()\r\n")
-# #			if inputready:
-# 			rcvddata = client.readline()
-# #			print rcvddata
-# 			if rcvddata != -1 :
-# 				sys.stdout.write("%s" % rcvddata)
-# #				for i in range(0, len(rcvddata)):
-# #					sys.stdout.write("%d " % rcvddata[i])
-# #				sys.stdout.write("\r\n")
-# 				sys.stdout.flush()
-# #				client.write(rcvddata)
-#
-# 		time.sleep(1)
+if __name__ == '__main__':
+	client = TCPClient()
+			
+	print(client.state)
+
+	while True:
+		
+		
+		if client.state is CLOSE_STATE:
+			cur_state = client.state
+			client.state = client.open(5001)
+			if client.state != cur_state:
+				sys.stdout.write('%r\r\n' % client.state) 
+#			client.state = OPENTRY_STATE
+			
+		elif client.state is OPEN_STATE:
+			cur_state = client.state
+			client.state = client.connect("192.168.11.235", 9000)
+			if client.state != cur_state:
+				sys.stdout.write('%r\r\n' % client.state) 
+			
+		elif client.state is CONNECT_STATE:
+#			sys.stdout.write("check readline()\r\n")
+#			if inputready:
+			rcvddata = client.readline()
+#			print rcvddata
+			if rcvddata != -1 :
+				sys.stdout.write("%s" % rcvddata)
+#				for i in range(0, len(rcvddata)):
+#					sys.stdout.write("%d " % rcvddata[i])
+#				sys.stdout.write("\r\n")
+				sys.stdout.flush()
+#				client.write(rcvddata)
+	
+		time.sleep(1)
